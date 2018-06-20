@@ -14,7 +14,6 @@ Bug report, questions and discussion are welcome, you can post an issue or pull 
 
 
 * GitHub地址:https://github.com/yifengyou/learn-kvm
-
 * GibBook地址:https://yifengyou.gitbooks.io/learn-kvm/content/
 
 
