@@ -1,5 +1,9 @@
 # Intel硬件虚拟化技术
 
+## 总结
+
+* Intel 在 2006 年发布了硬件虚拟化技术。 其中支持 X86 体系结构的称为 Intel VT-x 技术。
+* VT-x 引入了一种新的处理器操作，叫做 VMX（ Virtual Machine Extension），提供了两种处理器的工作环境。 VMCS 结构实现两种环境之间的切换。 VM Entry 使虚拟机进去客户模式，VM Exit 使虚拟机退出客户模式。
 
 ![1529510934191.png](image/1529510934191.png)
 
