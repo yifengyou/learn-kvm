@@ -5,6 +5,7 @@
 * [Intel硬件虚拟化技术](docs/Intel硬件虚拟化技术/Intel硬件虚拟化技术.md)
 * [AMD硬件虚拟化技术](docs/AMD硬件虚拟化技术/AMD硬件虚拟化技术.md)
 * [Xen虚拟化技术](docs/Xen虚拟化技术/Xen虚拟化技术.md)
+* [KVM简介](docs/KVM简介/KVM简介.md)
 * [KVM基本结构](docs/KVM基本结构/KVM基本结构.md)
 * [KVM工作原理](docs/KVM工作原理/KVM工作原理.md)
 * [构建KVM环境](docs/构建KVM环境/构建KVM环境.md)
