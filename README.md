@@ -61,6 +61,8 @@ SourceForge KVM页:<https://sourceforge.net/projects/kvm/>
 
 Qemu社区:<https://www.qemu.org>
 
+kvm.git:<https://git.kernel.org/pub/scm/virt/kvm/kvm.git/>
+
 ## KVM历史大事件
 
 * 2005年11月，Intel发布奔腾四处理器第一次正式支持VT技术
