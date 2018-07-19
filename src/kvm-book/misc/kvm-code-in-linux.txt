@@ -1,0 +1,25 @@
+# KVM code line numbers in Linux kenrel 3.10.0-RC2
+# based on kvm.git commit: 514e250f67d2b
+# Total: 118542 (lines)
+
+# KVM framework core codes
+virt/kvm/*   7309
+
+# arch related KVM codes
+arch/x86/kvm/*   37076
+arch/arm/kvm/*  7751
+arch/powerpc/kvm/*   29307
+arch/s390/kvm/*  4198
+arch/ia64/kvm/*  12328
+arch/mips/kvm/*  5628
+arch/tile/kvm/*  37
+drivers/s390/kvm/*  1447
+
+# header files about KVM
+arch/*/include/asm/kvm* 7179
+include/linux/*kvm*  1238
+include/asm-generic/*kvm* 21
+
+# docs about KVM
+Documentation/virtual/kvm/*  4774
+Documentation/*/kvm*.txt 249

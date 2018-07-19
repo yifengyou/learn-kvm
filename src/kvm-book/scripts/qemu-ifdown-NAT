@@ -1,0 +1,18 @@
+#!/bin/bash
+# qemu-ifdown script for QEMU/KVM with NAT network mode
+
+# set your bridge name
+BRIDGE="virbr0"
+
+if [ -n "$1" ]; then
+	echo "Tearing down network bridge for $1" > /tmp/temp-nat.log
+	ip link set $1 down
+	brctl delif "$BRIDGE" $1
+	ip link set "$BRIDGE" down
+	brctl delbr "$BRIDGE"
+	iptables -t nat -F
+	exit 0
+else
+	echo "Error: no interface specified"  > /tmp/temp-nat.log
+	exit 1
+fi

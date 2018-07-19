@@ -92,6 +92,12 @@ kvm.git:<https://git.kernel.org/pub/scm/virt/kvm/kvm.git/>
 
 ![1529509896727.png](image/1529509896727.png)
 
+![1531985313149.png](image/1531985313149.png)
+
+![1531985350356.png](image/1531985350356.png)
+
+
+
 ## 个人的一些看法
 
 * KVM从一开始就必须要硬件虚拟化支持。现有的源码追溯到2006年11月2号，那个时候KVM还是有以色列创业公司Qumranet研发，分成两个部分，一部分是Qemu-kvm-patch，一部分是kvm-module。

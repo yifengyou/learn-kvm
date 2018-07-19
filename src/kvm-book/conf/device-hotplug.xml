@@ -1,0 +1,11 @@
+<!--
+     # attach/detach a PCI/PCI-e device to a domain.
+     virsh attach-device $DomID device-hotplug.xml
+     virsh detach-device $DomID device-hotplug.xml
+-->
+
+<hostdev mode='subsystem' type='pci' managed='yes'>
+	<source>
+		<address domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
+	</source>
+</hostdev>

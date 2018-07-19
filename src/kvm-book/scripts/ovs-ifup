@@ -1,0 +1,5 @@
+#!/bin/bash
+# a script for using openvswitch when starting a KVM guest
+switch='br0'
+/sbin/ifconfig $1 0.0.0.0 up
+ovs-vsctl add-port ${switch} $1

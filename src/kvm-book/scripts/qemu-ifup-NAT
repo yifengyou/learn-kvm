@@ -1,0 +1,91 @@
+#!/bin/bash
+# qemu-ifup script for QEMU/KVM with NAT netowrk mode
+
+# set your bridge name
+BRIDGE=virbr0
+
+# Network information
+NETWORK=192.168.122.0
+NETMASK=255.255.255.0
+# GATEWAY for internal guests is the bridge in host
+GATEWAY=192.168.122.1
+DHCPRANGE=192.168.122.2,192.168.122.254
+
+# Optionally parameters to enable PXE support
+TFTPROOT=
+BOOTP=
+
+function check_bridge() 
+{
+	if brctl show | grep "^$BRIDGE" &> /dev/null; then
+		return 1
+	else
+		return 0
+	fi
+}
+
+function create_bridge() 
+{
+	    brctl addbr "$BRIDGE"
+	    brctl stp "$BRIDGE" on
+	    brctl setfd "$BRIDGE" 0
+	    ifconfig "$BRIDGE" "$GATEWAY" netmask "$NETMASK" up
+}
+
+function enable_ip_forward() 
+{
+	echo 1 > /proc/sys/net/ipv4/ip_forward
+}
+
+function add_filter_rules() 
+{
+	iptables -t nat -A POSTROUTING -s "$NETWORK"/"$NETMASK" \
+		! -d "$NETWORK"/"$NETMASK" -j MASQUERADE
+}
+
+function start_dnsmasq() 
+{
+	# don't run dnsmasq repeatedly
+	ps -ef | grep "dnsmasq" | grep -v "grep" &> /dev/null
+	if [ $? -eq 0 ]; then
+		echo "Warning:dnsmasq is already running. No need to run it again."
+		return 1
+	fi
+
+	dnsmasq \
+		--strict-order \
+		--except-interface=lo \
+		--interface=$BRIDGE \
+		--listen-address=$GATEWAY \
+		--bind-interfaces \
+		--dhcp-range=$DHCPRANGE \
+		--conf-file="" \
+		--pid-file=/var/run/qemu-dnsmasq-$BRIDGE.pid \
+		--dhcp-leasefile=/var/run/qemu-dnsmasq-$BRIDGE.leases \
+		--dhcp-no-override \
+		${TFTPROOT:+"--enable-tftp"} \
+		${TFTPROOT:+"--tftp-root=$TFTPROOT"} \
+		${BOOTP:+"--dhcp-boot=$BOOTP"}
+}
+
+function setup_bridge_nat()
+{
+	check_bridge "$BRIDGE"
+	if [ $? -eq 0 ]; then
+		create_bridge
+	fi
+	enable_ip_forward
+	add_filter_rules "$BRIDGE"
+	start_dnsmasq "$BRIDGE"
+}
+
+# need to check $1 arg before setup
+if [ -n "$1" ]; then
+	setup_bridge_nat
+	ifconfig "$1" 0.0.0.0 up
+	brctl addif "$BRIDGE" "$1"
+	exit 0
+else
+	echo "Error: no interface specified."
+	exit 1
+fi

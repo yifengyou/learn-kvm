@@ -1,0 +1,28 @@
+1. vim /etc/sysconfig/network-scripts/ifcfg-br0
+DEVICE=br0
+TYPE=Bridge
+ONBOOT=yes
+BOOTPROTO=dhcp
+DELAY=0
+NM_CONTROLLED=no
+
+  vim /etc/sysconfig/network-scripts/ifcfg-eth0
+DEVICE=eth0
+TYPE=Ethernet
+HWADDR=00:1E:67:65:93:22
+ONBOOT=yes
+BRIDGE=br0
+NM_CONTROLLED=no
+ 
+2. restart networking:
+    /etc/init.d/network restart
+or: service network restart
+
+
+3. add the following settings in /etc/sysctl.conf;
+and execute "sysctl -p /etc/sysctl.conf" command
+# Disable netfilter on bridges.
+net.bridge.bridge-nf-call-ip6tables = 0
+net.bridge.bridge-nf-call-iptables = 0
+net.bridge.bridge-nf-call-arptables = 0
+

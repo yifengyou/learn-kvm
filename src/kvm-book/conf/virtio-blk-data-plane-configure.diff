@@ -1,0 +1,37 @@
+diff --git a/repos/domain/xmls/kvm_guest_define.xml b/repos/domain/xmls/kvm_guest_define.xml
+index 264947b..51bc324 100644
+--- a/repos/domain/xmls/kvm_guest_define.xml
++++ b/repos/domain/xmls/kvm_guest_define.xml
+@@ -1,4 +1,4 @@
+-<domain type='kvm'>
++<domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
+   <name>GUESTNAME</name>
+   <uuid>UUID</uuid>
+   <memory unit='KiB'>MEMORY</memory>
+@@ -27,7 +27,7 @@
+   <devices>
+     <emulator>/usr/bin/qemu-kvm</emulator>
+     <disk type='file' device='disk'>
+-      <driver name='qemu' cache="none" type='IMAGEFORMAT'/>
++      <driver name='qemu' cache="none" type='IMAGEFORMAT' io='native'/>
+       <source file='DISKPATH'/>
+       <target dev='vda' bus='HDDRIVER'/>
+     </disk>
+@@ -56,4 +56,17 @@
+     <memballoon model='virtio'>
+     </memballoon>
+   </devices>
++  <qemu:commandline>
++    <qemu:arg value='-set'/>
++    <qemu:arg value='device.virtio-disk0.scsi=off'/>
++  </qemu:commandline>
++  <!-- config-wce=off is not needed in RHEL 6.4 -->
++  <qemu:commandline>
++    <qemu:arg value='-set'/>
++    <qemu:arg value='device.virtio-disk0.config-wce=off'/>
++  </qemu:commandline>
++  <qemu:commandline>
++    <qemu:arg value='-set'/>
++    <qemu:arg value='device.virtio-disk0.x-data-plane=on'/>
++  </qemu:commandline>
+ </domain>
