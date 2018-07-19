@@ -7,6 +7,10 @@
 		- [KVM存储](#kvm存储)
 		- [KVM设备驱动](#kvm设备驱动)
 		- [KVM性能和伸缩性](#kvm性能和伸缩性)
+	- [KVM辅助](#kvm辅助)
+		- [Qemu-kvm](#qemu-kvm)
+		- [libvirt](#libvirt)
+		- [virt-manager](#virt-manager)
 	- [KVM前景](#kvm前景)
 	- [参考文章](#参考文章)
 	- [END](#end)
@@ -77,6 +81,24 @@
 ### KVM性能和伸缩性
 
 * RHEL 6.x 系统一个KVM客户机可支持160个虚拟CPU和多达2T的内存，KVM宿主机支持4096个CPU核心和多达64TB的内存。
+
+## KVM辅助
+
+### Qemu-kvm
+
+* 开源社区协作，kvm实现不了的功能通过Qemu模拟
+
+### libvirt
+
+* libvirt是一套提供了多种语言接口的API，为各种虚拟化工具提供一套方便、可靠地编程接口，不仅支持KVM、Xen等其他其他虚拟化方案。
+* libvirt不仅提供API，还自带一套基于文本的管理虚拟机命令-virsh，可以通过virsh使用libvirt全部功能。
+
+
+### virt-manager
+
+* 用Python编写的虚拟机管理图形界面，直观操作虚拟机。
+* virt-manager也是利用了libvirt API编写的哦。
+
 
 ## KVM前景
 
