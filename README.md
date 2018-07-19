@@ -22,22 +22,7 @@ GitHub访问地址
 https://yifengyou.gitbooks.io/learn-kvm/content/
 
 
-## 参考书目
-
-      《KVM虚拟化技术实战与原理解析》
-
-![1529509835592.png](image/1529509835592.png)
-
-
-      《Linux KVM虚拟化架构实战指南》
-
-![1529509870689.png](image/1529509870689.png)
-
-      《KVM私有云架构设计与实践》
-
-![1529509896727.png](image/1529509896727.png)
-
-## 笔记目录
+## 目录
 
 * [虚拟化技术简介](docs/虚拟化技术简介/虚拟化技术简介.md)
 * [Intel硬件虚拟化技术](docs/Intel硬件虚拟化技术/Intel硬件虚拟化技术.md)
@@ -88,12 +73,24 @@ kvm.git:<https://git.kernel.org/pub/scm/virt/kvm/kvm.git/>
 * 内核同页合并(Kernel Same-page Merging,KMS)
 
 
-## 图示
+## 思维导图
 
 ![1531909971346.png](image/1531909971346.png)
 
 
+## 参考书目
 
+![1529509835592.png](image/1529509835592.png)
+
+![1531984957300.png](image/1531984957300.png)
+
+![1531984933724.png](image/1531984933724.png)
+
+![1531985038880.png](image/1531985038880.png)
+
+![1531985125215.png](image/1531985125215.png)
+
+![1529509896727.png](image/1529509896727.png)
 
 ## 个人的一些看法
 
