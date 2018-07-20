@@ -103,6 +103,7 @@
 ## KVM前景
 
 * 几年前，KVM缺少成熟的工具用于管理KVM服务器和客户机，随着libvirt、virt-manager等工具和OpenStack等云计算平台的逐渐完善，KVM易用性方面有所逐渐被克服。
+* KVM在与Linux整合中优于Xen，KVM是Linux内核的一部分，但是Xen是安装在Linux内核下层的产品而已。但是Xen历史更长久，相对更成熟
 
 
 
