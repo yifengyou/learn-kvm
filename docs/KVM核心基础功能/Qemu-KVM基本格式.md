@@ -3,18 +3,25 @@
 - [Qemu-KVM基本用法](#qemu-kvm基本用法)
 	- [Qemu命令基本格式](#qemu命令基本格式)
 	- [Qemu标准选项](#qemu标准选项)
-		- [qemu -name选项](#qemu-name选项)
-		- [qemu -M选项](#qemu-m选项)
-		- [qemu -cpu model选项](#qemu-cpu-model选项)
-		- [qemu -smp选项](#qemu-smp选项)
-		- [qemu -numa选项](#qemu-numa选项)
-		- [qemu -name选项](#qemu-name选项)
-		- [qemu -name选项](#qemu-name选项)
-		- [Qemu-CPU配置](#qemu-cpu配置)
-		- [Qemu-内存配置](#qemu-内存配置)
-		- [Qemu-存储器配置](#qemu-存储器配置)
-		- [Qemu-网络配置](#qemu-网络配置)
+		- [qemu -name选项-设定客户机名称](#qemu-name选项-设定客户机名称)
+		- [qemu -M选项-设定模拟的主机类型](#qemu-m选项-设定模拟的主机类型)
+		- [qemu -cpu model选项-设定CPU模型](#qemu-cpu-model选项-设定cpu模型)
+		- [qemu -smp选项-模拟SMP多处理器架构的CPU数量](#qemu-smp选项-模拟smp多处理器架构的cpu数量)
+		- [四核8线程与八核的区别](#四核8线程与八核的区别)
+		- [qemu -m选项-设置内存大小](#qemu-m选项-设置内存大小)
+			- [大页Hugepage](#大页hugepage)
+		- [qemu -numa选项-模拟多接点NUMA设备](#qemu-numa选项-模拟多接点numa设备)
+		- [qemu -fd选项-软盘镜像](#qemu-fd选项-软盘镜像)
+		- [qemu -hd选项-硬盘镜像](#qemu-hd选项-硬盘镜像)
+		- [qemu -cdrom选项-光盘镜像](#qemu-cdrom选项-光盘镜像)
+		- [qemu -drive选项-定义一个硬盘设备](#qemu-drive选项-定义一个硬盘设备)
+		- [qemu -boot选项-设置启动顺序](#qemu-boot选项-设置启动顺序)
+	- [qemu-image](#qemu-image)
+	- [Qemu-网络配置](#qemu-网络配置)
+		- [网桥模式](#网桥模式)
+		- [NAT模式](#nat模式)
 		- [Qemu-图形界面配置](#qemu-图形界面配置)
+	- [参考博客](#参考博客)
 	- [END](#end)
 
 <!-- /TOC -->
@@ -50,11 +57,11 @@ Copyright (c) 2003-2017 Fabrice Bellard and the QEMU Project developers
 
 ## Qemu标准选项
 
-### qemu -name选项
+### qemu -name选项-设定客户机名称
 
 -name:执行虚拟机名字，可重复，不一定唯一，仅为人标记
 
-### qemu -M选项
+### qemu -M选项-设定模拟的主机类型
 
 * -M machine:指定要模拟的主机类型
 
@@ -118,9 +125,10 @@ xenfv                Xen Fully-virtualized PC
 xenpv                Xen Para-virtualized PC
 ```
 
-### qemu -cpu model选项
+### qemu -cpu model选项-设定CPU模型
 
-指定CPU模型
+* 指定CPU模型而不是CPU数量，这点要明确
+* 可以不加该选项，有个默认值
 
 ```
 root@android:~/qemu-kvm# qemu-system-x86_64 -cpu ?
@@ -191,9 +199,10 @@ Recognized CPUID flags:
   arat
 ```
 
-### qemu -smp选项
+### qemu -smp选项-模拟SMP多处理器架构的CPU数量
 
-SMP的全称是"对称多处理"（Symmetrical Multi-Processing）技术，是指在一个计算机上汇集了一组处理器(多CPU),各CPU之间共享内存子系统以及总线结构。
+* SMP的全称是"对称多处理"（Symmetrical Multi-Processing）技术，是指在一个计算机上汇集了一组处理器(多CPU),各CPU之间共享内存子系统以及总线结构。
+* 不指定SMP则默认使用一个逻辑CPU
 
 ![1532077356807.png](image/1532077356807.png)
 
@@ -202,52 +211,388 @@ SMP的全称是"对称多处理"（Symmetrical Multi-Processing）技术，是�
 ```
 * PC机上最多模拟255个CPU
 * maxcpus用于指定热插入CPU个数
+* cpu指定模拟CPU数量
+* cores指定一个socket上CPU core数量
+* threads指定一个CPU core上线程数量
+* sockets指定模拟多少个CPU插槽
+
+![1532416968038.png](image/1532416968038.png)
+
+![1532417106613.png](image/1532417106613.png)
+
+![1532417143241.png](image/1532417143241.png)
+
+![1532417243284.png](image/1532417243284.png)
+
+分析一波
+
+```
+qemu-system-x86_64 -kernel ./arch/x86_64/boot/bzImage -k en-us -smp 16,maxcpus=128,cores=4,threads=2,sockets=16
+```
 
 
-### qemu -numa选项
+
+16个逻辑CPU
+
+1. 具有相同core id的cpu是同一个core的超线程。
+2. 具有相同physical id的cpu是同一颗cpu封装的线程或者cores。
+
+16个CPU，每个CPU四个核心，每个核心跑2个线程=每个CPU跑八个线程，16*8=108个线程
+
+![1532417953400.png](image/1532417953400.png)
+
+```
+ #逻辑CPU个数
+cat /proc/cpuinfo | grep "processor" | wc -l
+
+ #物理CPU个数：
+cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l
+
+ #每个物理CPU中Core的个数：
+cat /proc/cpuinfo | grep "cpu cores" | uniq | awk -F: '{print $2}'
+
+ #查看每个physical cpu上core id的数量,即为每个物理CPU上的core的个数
+cat /proc/cpuinfo | grep "core id"
+
+ #是否为超线程？
+ #如果有两个逻辑CPU具有相同的”core id”，那么超线程是打开的。
+ #每个物理CPU中逻辑CPU(可能是core, threads或both)的个数：
+cat /proc/cpuinfo | grep "siblings"
+```
+
+![1532417418371.png](image/1532417418371.png)
+
+![1532418755685.png](image/1532418755685.png)
+
+![1532418785459.png](image/1532418785459.png)
+
+![1532418806519.png](image/1532418806519.png)
+
+![1532418826884.png](image/1532418826884.png)
+
+![1532418843678.png](image/1532418843678.png)
+
+
+
+1. 拥有相同 physical id 的所有逻辑处理器共享同一个物理插座。每个 physical id 代表一个唯一的物理封装。
+2. Siblings 表示位于这一物理封装上的逻辑处理器的数量。
+3. 每个 core id 均代表一个唯一的处理器内核。
+4. 如果有一个以上逻辑处理器拥有相同的 core id 和 physical id，证明一个core上有多个线程，则说明系统支持超线程（HT）技术。
+5. core id不同的逻辑处理器physical id相同，则说明这是一个多内核处理器。cpu cores 条目也可以表示是否支持多内核。
+
+
+```
+qemu-system-x86_64: cpu topology: sockets (32) * cores (4) * threads (2) > maxcpus (128)
+
+
+sockets指定模拟多少个CPU插槽
+cores CPU个数
+threads 单个CPU线程数。超线程技术
+
+CPU插槽 * CPU个数 * 单个CPU可以跑线程数 < maxcpus
+```
+
+* 很明显，超线程技术也不能超过maxcpus
+
+### 四核8线程与八核的区别
+
+
+* 四核八线程是指使用了超线程技术 , 把一个物理核心,模拟成两个逻辑核心, 理论上要像八颗物理核心一样在同一时间执行八个线程，所以设备管理器和任务管理器中会显示出八个核心，但事实上并不是真正的八个核心，四核八线程就是真四核，虚拟八核；
+* 四核八线程在有些情况下比如任务量不大能让CPU利用率提高很多从而使其性能接近八核CPU的水平，而在另外一些情况比如CPU占用100%满负荷工作的情况下，这时候四核八线程和八核的性能表现差距明显，其实质就是虽然采用超线程技术能同时执行两个线程，但它并不象两个真正的CPU那样，每个CPU都具有独立的资源。当两个线程都同时需要某一个资源时，其中一个要暂时停止，并让出资源，直到这些资源闲置后才能继续。因此超线程的性能并不等于两颗CPU的性能。这也是四核八线程和八核的最大区别。
+* 总而言之四核8线程是4个物理核心模拟成8个**逻辑核心**，8核是8个物理核心
+
+### qemu -m选项-设置内存大小
+
+* 默认是128MB
+* 参数值后面可以接MB、GB、G、M表示单位
+* 不可以超过当前机器最大内存
+
+![1532419214212.png](image/1532419214212.png)
+
+![1532419232584.png](image/1532419232584.png)
+
+* 当然，只有在用到的时候才真正占用物理内存
+
+#### 大页Hugepage
+
+* 2.6内核引进大页内存
+
+![1532419317233.png](image/1532419317233.png)
+
+```
+mkdir /dev/hugepages
+mount -t hugetlbfs hugetlbfs /dev/hugepages
+sysctl vm.nr_hugespages=1024
+cat /proc/meminfo  | grep Huge
+qemu-system-x86_64 -mem-path /dev/hugepages -kernel ./arch/x86_64/boot/bzImage -k en-us -smp 16,maxcpus=128,cores=4,threads=2,sockets=16
+```
+
+![1532419673470.png](image/1532419673470.png)
+
+HugePages是linux内核的一个特性，使用hugepage可以用更大的内存页来取代传统的4K页面。使用HugePage主要带来如下好处
+
+1. 没有swap。Notswappable: HugePages are not swappable. Therefore there is no page-in/page-outmechanism overhead.HugePages are universally regarded as pinned.
+2. 减轻快表压力。Reliefof TLB pressure:TLB表格的更小了，效率提高
+3. 减轻换页表的负载。每个表单需64字节，如果管理50GB的物理内存，如果使用传统4K页面pagetable需要800M大小,而是用HugePages仅需要40M
+4. 提高内存的性能，降低CPU负载，原理同上
+
+HugePages和oracle AMM（自动内存管理）是互斥的，所有使用HugePages必须设置内存参数MEMORY_TARGET / MEMORY_MAX_TARGET 为0
+
+### qemu -numa选项-模拟多接点NUMA设备
 
 ```
 NUMA（Non Uniform Memory Access Architecture）技术可以使众多服务器像单一系统那样运转，同时保留小系统便于编程和管理的优点。基于电子商务应用对内存访问提出的更高的要求，NUMA也向复杂的结构设计提出了挑战。
 ```
 
-### qemu -name选项
-### qemu -name选项
+![1532416142683.png](image/1532416142683.png)
+
+
+
+### qemu -fd选项-软盘镜像
+
+![1532416196316.png](image/1532416196316.png)
+
+![1532416261714.png](image/1532416261714.png)
+
+
+
+
+### qemu -hd选项-硬盘镜像
+
+![1532416210199.png](image/1532416210199.png)
+
+
+### qemu -cdrom选项-光盘镜像
+
+* cdrom和hdc不能同时使用,因为cdrom就是客户机的第三个IDE设备
+
+![1532416280543.png](image/1532416280543.png)
+
+### qemu -drive选项-定义一个硬盘设备
+
+```
+ -drive option[,option[,option[,...]]]
+           Define a new drive. Valid options are:
+
+           file=file
+               This option defines which disk image to use with this drive. If the filename contains comma, you must double it (for instance, "file=my,,file" to use
+               file "my,file").
+
+               Special files such as iSCSI devices can be specified using protocol specific URLs. See the section for "Device URL Syntax" for more information.
+
+           if=interface
+               This option defines on which type on interface the drive is connected.  Available types are: ide, scsi, sd, mtd, floppy, pflash, virtio.
+
+           bus=bus,unit=unit
+               These options define where is connected the drive by defining the bus number and the unit id.
+
+           index=index
+               This option defines where is connected the drive by using an index in the list of available connectors of a given interface type.
+
+           media=media
+               This option defines the type of the media: disk or cdrom.
+
+           cyls=c,heads=h,secs=s[,trans=t]
+               These options have the same definition as they have in -hdachs.
+
+           snapshot=snapshot
+               snapshot is "on" or "off" and controls snapshot mode for the given drive (see -snapshot).
+
+           cache=cache
+               cache is "none", "writeback", "unsafe", "directsync" or "writethrough" and controls how the host cache is used to access block data.
+
+           aio=aio
+               aio is "threads", or "native" and selects between pthread based disk I/O and native Linux AIO.
+
+           discard=discard
+               discard is one of "ignore" (or "off") or "unmap" (or "on") and controls whether discard (also known as trim or unmap) requests are ignored or passed to
+               the filesystem.  Some machine types may not support discard requests.
+
+           format=format
+               Specify which disk format will be used rather than detecting the format.  Can be used to specifiy format=raw to avoid interpreting an untrusted format
+               header.
+
+           serial=serial
+               This option specifies the serial number to assign to the device.
+
+           addr=addr
+               Specify the controller's PCI address (if=virtio only).
+
+           werror=action,rerror=action
+               Specify which action to take on write and read errors. Valid actions are: "ignore" (ignore the error and try to continue), "stop" (pause QEMU), "report"
+               (report the error to the guest), "enospc" (pause QEMU only if the host disk is full; report the error to the guest otherwise).  The default setting is
+               werror=enospc and rerror=report.
+
+           readonly
+               Open drive file as read-only. Guest write attempts will fail.
+
+           copy-on-read=copy-on-read
+               copy-on-read is "on" or "off" and enables whether to copy read backing file sectors into the image file.
+
+           detect-zeroes=detect-zeroes
+               detect-zeroes is "off", "on" or "unmap" and enables the automatic conversion of plain zero writes by the OS to driver specific optimized zero write
+               commands. You may even choose "unmap" if discard is set to "unmap" to allow a zero write to be converted to an UNMAP operation.
+```
+
+### qemu -boot选项-设置启动顺序
+
+![1532416447586.png](image/1532416447586.png)
+
+order =
+
+* a,b表示第一个和第二个软盘
+* c表示第一个硬盘
+* d表示光驱
+* n表示网络启动
+
+once=
+
+* 表示第一次启动顺序，重启后恢复默认值
+
+menu=on/off
+
+* 要不要显示进入BIOS菜单？就是让你按F12进入菜单
+
+![1532420073841.png](image/1532420073841.png)
+
+![1532420176544.png](image/1532420176544.png)
+
+## qemu-image
+
+* qemu支持raw、cow、qcow、qcow2、vdi、vmdk、qed
+
+![1532420296028.png](image/1532420296028.png)
+
+```
+qemu-img create [-f fmt] [-o options] filename [size]
+
+qemu-img check [-f fmt] filename
+
+qemu-img convert [-c] [-f fmt] [-O output_fmt] [-o options] filenam% [filename2 [...]] output_filename
+
+qemu-img info [-f fmt] filename
+
+qemu-img commit [-f fmt] filename
+
+qemu-img snapshot [-l | -a snapshot | -c snapshot | -d snapshot] filename
+
+qemu-img rebase [-f fmt] [-t cache] [-p] [-u] -b backing_file [-F backing_fmt] filename
+
+qemu-img resize filename [+ | -]size
+```
+
+![1532420387290.png](image/1532420387290.png)
+
+* size可以不用放在-o中
+* 默认不启用压缩
+* backing_file后端镜像-神奇的东西 -b filename 或 -o backing_file=filename
+	- 创建了文件并且指定后端镜像，那么只记录与后端镜像差异的部分。且跟后端镜像强依赖
+	- 如果需要提交的话要用qemi-img commit好似git一样
+
+```
+qemu-img commit [-f fmt] filename
+
+提交filename文件中的更改到后端支持镜像文件（创建时通过backing_file指定的）中去。
+```
+
+![1532421110265.png](image/1532421110265.png)
+
+![1532421128490.png](image/1532421128490.png)
+
+![1532421137826.png](image/1532421137826.png)
+
+![1532421145891.png](image/1532421145891.png)
+
+![1532421152853.png](image/1532421152853.png)
+
+![1532421158762.png](image/1532421158762.png)
+
+![1532421165253.png](image/1532421165253.png)
+
+![1532421173249.png](image/1532421173249.png)
 
 
 
 
 
+## Qemu-网络配置
+
+
+```
+qemu向客户机提供了如下四种不同模式的网络
+1、基于网桥的虚拟网卡
+2、基于nat的虚拟网络
+3、QEMU内置的用户网络模式
+4、直接分配网络设备的网络（这里先略过)
+```
+
+![1532422326656.png](image/1532422326656.png)
+
+
+
+查看支持的模拟网络
+
+![1532421648107.png](image/1532421648107.png)
 
 
 
 
-
-### Qemu-CPU配置
-
+### 网桥模式
 
 
+* 网桥模式1、可以让客户机和宿主机共享一个物理网络设备连接网络，2、也可以让客户机有自己的IP直连与宿主机一摸一样的网络。
+* 这里介绍一下共享一个物理网络设备连接网络的情况，具体示意图如下图所示
+基本原理就是创建一个桥接接口br0，在物理网卡和虚拟网络接口之间传递数据，具体做法为：虚拟出一个bridge，将这个bridge绑定到物理网卡上并分配一个对外的地址，再将对应的虚拟机网络设备绑定到这个虚拟bridge的一个端口上。
+
+![1532422403673.png](image/1532422403673.png)
+
+![1532422423533.png](image/1532422423533.png)
+
+![1532422431989.png](image/1532422431989.png)
+
+![1532422447822.png](image/1532422447822.png)
+
+```
+brctl addbr br0          #添加bridge
+brctl addif br0 eth0     #将br0和eth0绑定起来 **（可能让网络断掉，最好在本机操作，不要通过网络）**
+brctl stp br0 on         #将br0设置为启用STP协议
+ifconfig eth0 0          #将eth0的IP设置为0
+dhclient br0             #将br0网络配置好
+```
 
 
+### NAT模式
+
+network address translation， 网络地址转换，将内网IP数据包包头中的源IP地址转换为一个外网的IP地址，因此内部IP对外是不可见的，隐藏了内部结构更加安全，但对外提供服务则是其局限性，目前通常采用iptables工具进行端口映射解决。具体示意图如下所示
+
+![1532422493878.png](image/1532422493878.png)
+
+1. 相比使用网桥共享同一个网络设备，其区别在于virbr0并未直接绑定到实际的物理网卡，数据包经过virbr0，进行nat后转到IP包转发后从实际的物理网络设备中出去
+2. 在nat模式下，需要在宿主机上运行一个DHCP服务器给内网的机器分配IP地址，可以使用dnsmasq工具实现
+
+![1532422523297.png](image/1532422523297.png)
+
+![1532422536395.png](image/1532422536395.png)
+
+![1532422551469.png](image/1532422551469.png)
+
+![1532422573981.png](image/1532422573981.png)
+
+```
+brctl addbr virbr0
+brctl stp virbr0 on
+brctl setfd virbr0 0 #设置网络转发延时
+ifconfig virbr0 192.168.122.1 netmask 255.255.255.0 up
+```
 
 
-
-
-
-
-
-### Qemu-内存配置
-
-
-
-
-
-### Qemu-存储器配置
-
-
-### Qemu-网络配置
 
 ### Qemu-图形界面配置
 
+
+## 参考博客
+
+<https://www.jianshu.com/p/110b60c14a8b>
 
 
 ## END
