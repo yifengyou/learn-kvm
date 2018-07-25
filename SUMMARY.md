@@ -13,6 +13,10 @@
 * [构建KVM环境](docs/构建KVM环境/构建KVM环境.md)
 * [KVM核心基础功能](docs/KVM核心基础功能/KVM核心基础功能.md)
     * [Qemu-KVM基本格式](docs/KVM核心基础功能/Qemu-KVM基本格式.md)
+    * [Qemu-KVM网络配置](docs/KVM核心基础功能/Qemu-KVM网络配置.md)
+    * [Qemu-KVM图形界面](docs/KVM核心基础功能/Qemu-KVM图形界面.md)
 * [KVM高级功能](docs/KVM高级功能/KVM高级功能.md)
+* [KVM内核模块源码分析](docs/KVM内核模块源码分析/KVM内核模块源码分析.md)
+* [Qemu-KVM源码分析](docs/Qemu-KVM源码分析/Qemu-KVM源码分析.md)
 * [KVM开源社区](docs/KVM开源社区/KVM开源社区.md)
 
