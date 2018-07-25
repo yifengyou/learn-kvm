@@ -1,0 +1,3 @@
+[submodule "linux-2.6"]
+	path = linux-2.6
+	url = ../kvm.git

@@ -23,11 +23,76 @@
 
 ![1532479038159.png](image/1532479038159.png)
 
-这时候还是单模块+补丁的形式打进内核。最原始的源码，这，只能说我能找到的最原始的源码了。
+这时候还是单模块+补丁的形式打进内核。最原始的源码，这，只能说我能找到的最原始的源码了。早期包含的源码很少，明显可以看到。找原始内核版本编译一下试试。
+
+```
+root@ubuntu16x64:~/github/learn-kvm/src/2006-11-02# tree
+.
+├── kvm-module
+│   ├── debug.c
+│   ├── debug.h
+│   ├── include
+│   │   └── linux
+│   │       └── kvm.h
+│   ├── Kbuild
+│   ├── kvm.h
+│   ├── kvm-kmod.spec
+│   ├── kvm_main.c
+│   ├── Makefile
+│   ├── mmu.c
+│   ├── paging_tmpl.h
+│   ├── vmx.h
+│   ├── x86_emulate.c
+│   └── x86_emulate.h
+├── kvm-module-1.tar.gz
+├── libkvm
+│   ├── bootstrap.lds
+│   ├── emulator
+│   ├── flat.lds
+│   ├── kvmctl.c
+│   ├── kvmctl.h
+│   ├── main.c
+│   ├── Makefile
+│   └── test
+│       ├── bootstrap.S
+│       ├── cstart64.S
+│       ├── cstart.S
+│       ├── irq.S
+│       ├── memtest1.S
+│       ├── print.h
+│       ├── print.S
+│       ├── sieve.c
+│       ├── simple.S
+│       ├── stringio.S
+│       ├── vm.c
+│       └── vm.h
+├── libkvm-1.tar.gz
+└── qemu-kvm-1.patch
+
+6 directories, 34 files
+```
+
+![1532479279694.png](image/1532479279694.png)
+
+* 用最新的内核编译报错，这，用哪个内核版本合适呢？2006年Linux版本多少？
+
+![1532479916852.png](image/1532479916852.png)
+
+* 根据Makefile中的rpm判断应该是红帽系列，找个2006年的红帽子
+
+![1532479953247.png](image/1532479953247.png)
+
+<http://mirror.nsc.liu.se/centos-store/4.4/isos/i386/>
+
+![1532483071789.png](image/1532483071789.png)
+
+* 很尴尬，老版本无法编译。可能当时源码本身不完善吧。需要点技术支持。抛弃，直接上2.6.30。
+
+找个差不多的版本就可以编译成功
+
+![1532480355432.png](image/1532480355432.png)
 
 
-
-
-
+##
 
 ## END

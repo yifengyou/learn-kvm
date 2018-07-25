@@ -1,0 +1,18 @@
+# trick to get the kvm-specific CONFIG_KVM_* definitions,
+# because the kernel source tree won't have them
+include $(obj)/../config.kbuild
+
+obj-m := kvm.o kvm-intel.o kvm-amd.o
+kvm-objs := kvm_main.o x86.o mmu.o x86_emulate.o ../anon_inodes.o irq.o i8259.o \
+	 lapic.o ioapic.o preempt.o i8254.o coalesced_mmio.o irq_comm.o \
+	 ../external-module-compat.o ../request-irq-compat.o
+ifeq ($(EXT_CONFIG_KVM_TRACE),y)
+kvm-objs += kvm_trace.o
+endif
+ifeq ($(CONFIG_IOMMU_API),y)
+kvm-objs += iommu.o
+endif
+kvm-intel-objs := vmx.o vmx-debug.o ../external-module-compat.o
+kvm-amd-objs := svm.o ../external-module-compat.o
+
+CFLAGS_kvm_main.o = -DKVM_MAIN

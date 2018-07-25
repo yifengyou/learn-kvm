@@ -1,0 +1,1 @@
+cmd_/root/github/learn-kvm/src/2006-11-02/kvm-module/built-in.o :=  rm -f /root/github/learn-kvm/src/2006-11-02/kvm-module/built-in.o; ar rcsD /root/github/learn-kvm/src/2006-11-02/kvm-module/built-in.o

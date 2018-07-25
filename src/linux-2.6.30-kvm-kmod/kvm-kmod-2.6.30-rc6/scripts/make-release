@@ -1,0 +1,81 @@
+#!/bin/bash -e
+
+usage() {
+    echo "usage: $0 [--upload] [--formal] commit [name]"
+    exit 1
+}
+
+[[ -f ~/.kvmreleaserc ]] && . ~/.kvmreleaserc
+
+upload=
+formal=
+
+releasedir=~/sf-release
+[[ -z "$TMP" ]] && TMP="/tmp"
+tmpdir="$TMP/kvm-kmod-make-release.$$"
+while [[ "$1" = -* ]]; do
+    opt="$1"
+    shift
+    case "$opt" in
+	--upload)
+	    upload="yes"
+	    ;;
+	--formal)
+	    formal="yes"
+	    ;;
+	*)
+	    usage
+	    ;;
+    esac
+done
+
+commit="$1"
+name="$2"
+
+if [[ -z "$commit" ]]; then
+    usage
+fi
+
+if [[ -z "$name" ]]; then
+    name="$commit"
+fi
+
+tarball="$releasedir/$name.tar.gz"
+
+cd "$(dirname "$0")"/..
+LINUX="$(readlink -f "linux-2.6")"
+
+kvm_git="$(readlink -f .git)"
+linux_git="$(readlink -f "$LINUX/.git")"
+
+mkdir -p "$tmpdir/$name"
+mkdir -p "$tmpdir/$name/linux-2.6"
+
+files=("arch/*/kvm/*" "virt/kvm" "include/linux/kvm*"
+       "arch/*/include/asm/kvm*" "arch/x86/include/asm/virtext.h"
+       "arch/x86/include/asm/vmx.h" "arch/x86/include/asm/svm.h"
+       )
+
+git --git-dir="$kvm_git" --work-tree="$tmpdir/$name" checkout "$commit" .
+lcommit=($(git --git-dir="$kvm_git" ls-tree "$commit" linux-2.6))
+lcommit="${lcommit[2]}"
+git --git-dir="$linux_git" --work-tree="$tmpdir/$name/linux-2.6" \
+    checkout "$lcommit" "${files[@]}"
+
+cd "$tmpdir/$name"
+
+./sync "$name"
+
+rm -rf "$tmpdir/$name/linux-2.6"
+
+if [[ -n "$formal" ]]; then
+    echo "$name" > "$tmpdir/$name/KVM_VERSION"
+fi
+
+tar czf "$tarball" -C "$tmpdir" "$name"
+
+rm -rf "$tmpdir"
+
+if [[ -n "$upload" ]]; then
+    rsync --progress -h "$tarball" avik@frs.sourceforge.net:uploads/
+fi

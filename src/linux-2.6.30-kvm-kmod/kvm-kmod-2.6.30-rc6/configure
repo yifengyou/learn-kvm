@@ -1,0 +1,137 @@
+#!/bin/bash
+
+kernelsourcedir=
+kerneldir=/lib/modules/$(uname -r)/build
+cc=gcc
+ld=ld
+objcopy=objcopy
+ar=ar
+want_module=1
+kvm_trace=
+cross_prefix=
+arch=`uname -m`
+# don't use uname if kerneldir is set
+no_uname=
+# we only need depmod_version for kvm.ko install
+depmod_version=
+if [ -z "TMPDIR" ] ; then
+    TMPDIR=.
+fi
+
+usage() {
+    cat <<-EOF
+	Usage: $0 [options]
+
+	Options include:
+	    --arch=ARCH            architecture to compile for ($arch)
+	    --cross-prefix=PREFIX  prefix for cross compile
+	    --with-kvm-trace       Enable kvm_trace
+	    --kerneldir=DIR        kernel build directory ($kerneldir)
+            --help                 this helpful text
+EOF
+    exit 1
+}
+
+while [[ "$1" = -* ]]; do
+    opt="$1"; shift
+    arg=
+    hasarg=
+    if [[ "$opt" = *=* ]]; then
+	arg="${opt#*=}"
+	opt="${opt%%=*}"
+	hasarg=1
+    fi
+    case "$opt" in
+	--kerneldir)
+	    kerneldir="$arg"
+            no_uname=1
+	    ;;
+	--with-patched-kernel)
+	    want_module=
+	    ;;
+	--with-kvm-trace)
+	    kvm_trace=y
+	    ;;
+	--arch)
+	    arch="$arg"
+	    ;;
+	--cross-prefix)
+	    cross_prefix="$arg"
+            ;;
+	--help)
+	    usage
+	    ;;
+	*)
+	    usage
+	    ;;
+    esac
+done
+
+karch="$arch"
+
+case $arch in
+    i?86*|x86_64*)
+        arch=${arch/#i?86/i386}
+	karch="x86"
+        ;;
+esac
+
+kvm_version() {
+    local fname="$(dirname "$0")/KVM_VERSION"
+
+    if test -f "$fname"; then
+        cat "$fname"
+    else
+        echo "kvm-devel"
+    fi
+}
+
+processor=${arch#*-}
+arch=${arch%%-*}
+
+# see if we have split build and source directories
+if [ -d "$kerneldir/include2" ]; then
+    kernelsourcedir=${kerneldir%/*}/source
+fi
+
+if [ -n "$no_uname" -a "$want_module" ]; then
+    if [ -e "$kerneldir/.kernelrelease" ]; then
+        depmod_version=`cat "$kerneldir/.kernelrelease"`
+
+    elif [ -e "$kerneldir/include/config/kernel.release" ]; then
+            depmod_version=`cat "$kerneldir/include/config/kernel.release"`
+    elif [ -e "$kerneldir/.config" ]; then
+	depmod_version=$(awk '/Linux kernel version:/ { print $NF }' \
+			 "$kerneldir/.config")
+    else
+        echo
+        echo "Error: kernelversion not found"
+        echo "Please make sure your kernel is configured"
+        echo
+        exit 1
+    fi
+fi
+
+rm -f include/asm include-compat/asm
+mkdir -p include
+ln -sf asm-"$karch" include/asm
+ln -sf asm-"$karch" include-compat/asm
+
+cat <<EOF > config.mak
+ARCH=$arch
+PROCESSOR=$processor
+PREFIX=$prefix
+KERNELDIR=$kerneldir
+KERNELSOURCEDIR=$kernelsourcedir
+CROSS_COMPILE=$cross_prefix
+CC=$cross_prefix$cc
+LD=$cross_prefix$ld
+OBJCOPY=$cross_prefix$objcopy
+AR=$cross_prefix$ar
+DEPMOD_VERSION=$depmod_version
+KVM_VERSION=$(kvm_version)
+EOF
+
+cat <<EOF > config.kbuild
+EXT_CONFIG_KVM_TRACE=$kvm_trace
+EOF

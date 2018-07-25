@@ -1,0 +1,27 @@
+prerequisite: asm-offsets.h ia64/memset.S ia64/memcpy.S
+	cp -f $(KERNELDIR)/arch/ia64/lib/memcpy.S ia64/memcpy.S
+	cp -f $(KERNELDIR)/arch/ia64/lib/memset.S ia64/memset.S
+	cmp -s asm-offset.h ia64/asm-offset.h || mv -f asm-offsets.* ia64/
+	cp -f $(KERNELDIR)/lib/vsprintf.c ia64/vsprintf.c
+	cp -f $(KERNELDIR)/lib/ctype.c ia64/ctype.c
+	sed -i /^EXPORT_SYMBOL/d ia64/vsprintf.c
+	sed -i /^EXPORT_SYMBOL/d ia64/ctype.c
+
+asm-offsets.h: asm-offsets.s
+	@(set -e; \
+	  echo "/*"; \
+	  echo " * DO NOT MODIFY."; \
+	  echo " *"; \
+	  echo " * This file was auto-generated from $<"; \
+	  echo " *"; \
+	  echo " */"; \
+	  echo ""; \
+	  echo "#ifndef __KVM_ASM_OFFSETS_H__"; \
+	  echo "#define __KVM_ASM_OFFSETS_H__"; \
+	  echo ""; \
+	  sed -ne "/^->/{s:^->\([^ ]*\) [\$$#]*\([^ ]*\) \(.*\):#define \1 \2 /* \3 */:; s:->::; p;}"; \
+	  echo ""; \
+	  echo "#endif") <$< >$@
+
+asm-offsets.s: ia64/asm-offsets.c
+	gcc -S -D__KERNEL__ -I./include -I$(KERNELDIR)/include -I$(KERNELDIR)/arch/ia64/include ia64/asm-offsets.c
