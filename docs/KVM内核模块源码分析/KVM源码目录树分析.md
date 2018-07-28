@@ -5,6 +5,8 @@
 	- [KVM模块入口点搜索](#kvm模块入口点搜索)
 	- [KVM模块Kconfig](#kvm模块kconfig)
 	- [KVM模块Makefile文件](#kvm模块makefile文件)
+	- [kvm模块入口文件vmx.c](#kvm模块入口文件vmxc)
+	- [使用SourceInsght4阅读源码](#使用sourceinsght4阅读源码)
 	- [END](#end)
 
 <!-- /TOC -->
@@ -387,7 +389,23 @@ kvm-amd-y		+= svm.o pmu_amd.o
 obj-$(CONFIG_KVM)	+= kvm.o
 obj-$(CONFIG_KVM_INTEL)	+= kvm-intel.o
 obj-$(CONFIG_KVM_AMD)	+= kvm-amd.o
-root@ubuntu16x64:~/kernel/linux-4.4.124/arch/x86/kvm# 
+root@ubuntu16x64:~/kernel/linux-4.4.124/arch/x86/kvm#
 ```
+
+
+## kvm模块入口文件vmx.c
+
+![1532753950385.png](image/1532753950385.png)
+
+一万多行，没毛病~果断用SourceInsight阅读源码
+
+
+
+## 使用SourceInsght4阅读源码
+
+![1532756590153.png](image/1532756590153.png)
+
+
+
 
 ## END
