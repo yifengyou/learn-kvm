@@ -17,6 +17,7 @@
     * [Qemu-KVM图形界面](docs/KVM核心基础功能/Qemu-KVM图形界面.md)
 * [KVM高级功能](docs/KVM高级功能/KVM高级功能.md)
 * [KVM内核模块源码分析](docs/KVM内核模块源码分析/KVM内核模块源码分析.md)
+    * [KVM源码目录树分析](docs/KVM内核模块源码分析/KVM源码目录树分析.md)
 * [Qemu-KVM源码分析](docs/Qemu-KVM源码分析/Qemu-KVM源码分析.md)
 * [KVM开源社区](docs/KVM开源社区/KVM开源社区.md)
 
