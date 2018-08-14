@@ -17,9 +17,11 @@
     * [Qemu-KVM图形界面](docs/KVM核心基础功能/Qemu-KVM图形界面.md)
 * [KVM高级功能](docs/KVM高级功能/KVM高级功能.md)
 * [KVM内核模块源码分析](docs/KVM内核模块源码分析/KVM内核模块源码分析.md)
-    * [KVM源码目录树分析](docs/KVM内核模块源码分析/KVM源码目录树分析.md)
+    * [kernel-2.6-KVM源码目录树分析](docs/KVM内核模块源码分析/kernel-2.6-KVM源码目录树分析.md)
+    * [kernel-4.2-KVM源码目录树分析](docs/KVM内核模块源码分析/kernel-4.2-KVM源码目录树分析.md)
     * [KVM源码分析-基本工作原理](docs/KVM内核模块源码分析/KVM源码分析-基本工作原理.md)
+    * [KVM的初始化流程](docs/KVM内核模块源码分析/KVM的初始化流程.md)
     * [KVM源码分析-虚拟机的创建与运行](docs/KVM内核模块源码分析/KVM源码分析-虚拟机的创建与运行.md)
-* [Qemu-KVM源码分析](docs/Qemu-KVM源码分析/Qemu-KVM源码分析.md)
+    * [KVM源码分析-CPU虚拟化](docs/KVM内核模块源码分析/KVM源码分析-CPU虚拟化.md)
 * [KVM开源社区](docs/KVM开源社区/KVM开源社区.md)
 

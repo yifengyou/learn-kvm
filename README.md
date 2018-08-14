@@ -19,6 +19,7 @@ GitHub访问地址：<https://github.com/yifengyou/learn-kvm>
 
 ## 目录
 
+* [KVM学习笔记](README.md)
 * [虚拟化技术简介](docs/虚拟化技术简介/虚拟化技术简介.md)
 * [虚拟化实现技术](docs/虚拟化实现技术/虚拟化实现技术.md)
 * [Intel硬件虚拟化技术](docs/Intel硬件虚拟化技术/Intel硬件虚拟化技术.md)
@@ -35,8 +36,13 @@ GitHub访问地址：<https://github.com/yifengyou/learn-kvm>
     * [Qemu-KVM图形界面](docs/KVM核心基础功能/Qemu-KVM图形界面.md)
 * [KVM高级功能](docs/KVM高级功能/KVM高级功能.md)
 * [KVM内核模块源码分析](docs/KVM内核模块源码分析/KVM内核模块源码分析.md)
-* [Qemu-KVM源码分析](docs/Qemu-KVM源码分析/Qemu-KVM源码分析.md)
+    * [kernel-2.6-KVM源码目录树分析](docs/KVM内核模块源码分析/kernel-2.6-KVM源码目录树分析.md)
+    * [kernel-4.2-KVM源码目录树分析](docs/KVM内核模块源码分析/kernel-4.2-KVM源码目录树分析.md)
+    * [KVM源码分析-基本工作原理](docs/KVM内核模块源码分析/KVM源码分析-基本工作原理.md)
+    * [KVM源码分析-虚拟机的创建与运行](docs/KVM内核模块源码分析/KVM源码分析-虚拟机的创建与运行.md)
+    * [KVM源码分析-CPU虚拟化](docs/KVM内核模块源码分析/KVM源码分析-CPU虚拟化.md)
 * [KVM开源社区](docs/KVM开源社区/KVM开源社区.md)
+
 
 
 ## KVM相关站点
@@ -79,6 +85,17 @@ kvm.git:<https://git.kernel.org/pub/scm/virt/kvm/kvm.git/>
 ## 思维导图
 
 ![1531909971346.png](image/1531909971346.png)
+
+![1534161835343.png](image/1534161835343.png)
+
+* kvm_x86_ops针对具体CPU架构进行虚拟化时的函数指针，分别对应kvm-intel.ko和kvm-amd.ko
+
+![1534161866401.png](image/1534161866401.png)
+
+* struct KVM 结构体唯一代表一个虚拟机
+
+![1534165263011.png](image/1534165263011.png)
+
 
 
 ## 参考书目
