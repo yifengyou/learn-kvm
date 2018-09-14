@@ -12,10 +12,8 @@ Bug report, questions and discussion are welcome, you can post an issue or pull 
 
 ## 相关站点
 
-
-GitBook访问地址：<https://yifengyou.gitbooks.io/learn-kvm/content/>
-
-GitHub访问地址：<https://github.com/yifengyou/learn-kvm>
+* GitBook访问地址：<https://yifengyou.gitbooks.io/learn-kvm/content/>
+* GitHub访问地址：<https://github.com/yifengyou/learn-kvm>
 
 ## 目录
 
@@ -44,19 +42,13 @@ GitHub访问地址：<https://github.com/yifengyou/learn-kvm>
 * [KVM开源社区](docs/KVM开源社区/KVM开源社区.md)
 
 
-
-
 ## KVM相关站点
 
-Kernel Virtual Machine:<http://www.linux-kvm.org/page/Main_Page>
-
-KVM早起源码pkgs:<https://src.fedoraproject.org/lookaside/pkgs/qemu/>
-
-SourceForge KVM页:<https://sourceforge.net/projects/kvm/>
-
-Qemu社区:<https://www.qemu.org>
-
-kvm.git:<https://git.kernel.org/pub/scm/virt/kvm/kvm.git/>
+* Kernel Virtual Machine:<http://www.linux-kvm.org/page/Main_Page>
+* KVM早起源码pkgs:<https://src.fedoraproject.org/lookaside/pkgs/qemu/>
+* SourceForge KVM页:<https://sourceforge.net/projects/kvm/>
+* Qemu社区:<https://www.qemu.org>
+* kvm.git:<https://git.kernel.org/pub/scm/virt/kvm/kvm.git/>
 
 ## KVM历史大事件
 
