@@ -9,8 +9,10 @@
 * [Lguest虚拟化技术](docs/Lguest虚拟化技术/Lguest虚拟化技术.md)
 * [QEMU介绍](docs/QEMU介绍.md)
     * [QEMU历史](docs/QEMU介绍/QEMU历史.md)
-* [QEMU基本结构](docs/QEMU基本结构/QEMU基本结构.md)
-* [QEMU工作原理](docs/QEMU工作原理/QEMU工作原理.md)
+* [QEMU基本结构](docs/QEMU基本结构.md)
+* [QEMU工作原理](docs/QEMU工作原理.md)
+* [QEMU使用](docs/QEMU使用.md)
+    * [QEMU运行x86_64虚拟机](docs/QEMU使用/QEMU运行x86_64虚拟机.md)
 * [KVM介绍](docs/KVM介绍.md)
     * [KVM历史](docs/KVM介绍/KVM历史.md)
 * [KVM基本结构](docs/KVM基本结构/KVM基本结构.md)
@@ -31,4 +33,3 @@
 * [KVM开源社区](docs/KVM开源社区/KVM开源社区.md)
 * [参考书籍](docs/附录/参考书籍.md)
 * [相关概念](docs/附录/相关概念.md)
-

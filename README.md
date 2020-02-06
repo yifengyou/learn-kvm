@@ -31,9 +31,11 @@ Bug report, questions and discussion are welcome, you can post an issue or pull 
 **QEMU(用户态) 相关**
 
 * [QEMU介绍](docs/QEMU介绍.md)
-  * [QEMU历史](docs/QEMU介绍/QEMU历史.md)
-* [QEMU基本结构](docs/QEMU基本结构/QEMU基本结构.md)
-* [QEMU工作原理](docs/QEMU工作原理/QEMU工作原理.md)
+    * [QEMU历史](docs/QEMU介绍/QEMU历史.md)
+* [QEMU基本结构](docs/QEMU基本结构.md)
+* [QEMU工作原理](docs/QEMU工作原理.md)
+* [QEMU使用](docs/QEMU使用.md)
+    * [QEMU运行x86_64虚拟机](docs/QEMU使用/QEMU运行x86_64虚拟机.md)
 
 **KVM(内核态) 相关**
 
