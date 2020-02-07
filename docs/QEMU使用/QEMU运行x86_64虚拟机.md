@@ -1,12 +1,66 @@
 # QEMU运行x86_64虚拟机
 
+## 命令一览
+
+```
+
+sudo apt-get install -y qemu-kvm kpartx bsdmainutils
+dd if=/dev/zero of=./disk.img bs=1M count=100
+echo "n
+p
+1
+
+
+w
+" | fdisk disk.img
+sudo losetup /dev/loop0 disk.img
+sudo kpartx -av /dev/loop0
+sudo mkfs.ext4 /dev/mapper/loop0p1
+sudo mkdir /mnt/rootfs
+sudo mount /dev/mapper/loop0p1 /mnt/rootfs
+mkdir busybox
+cd busybox
+wget https://busybox.net/downloads/busybox-1.29.3.tar.bz2 --no-check-certificate
+tar -xjf busybox-1.29.3.tar.bz2
+cd busybox-1.29.3
+make menuconfig
+make
+make install
+ldd bin/ping
+sudo mkdir /mnt/rootfs/lib
+sudo cp -r /lib/i386-linux-gnu  /mnt/rootfs/lib/
+sudo cp -r /lib/ld-linux.so.2  /mnt/rootfs/lib/
+sudo cp -r _install/*  /mnt/rootfs/
+cd /mnt/rootfs
+sudo cp -r /boot/vmlinuz-3.5.0-17-generic ./boot/
+sudo cp -r /boot/initrd.img-3.5.0-17-generic ./boot/
+cd boot
+sudo ln -svf vmlinuz-3.5.0-17-generic vmlinuz
+sudo ln -svf initrd.img-3.5.0-17-generic initrd
+cd /mnt/rootfs
+sudo mkdir dev proc run etc root sys
+sudo grub-install --root-directory=/mnt/rootfs/ /dev/loop0
+qemu-system-x86_64 -m 1024M -drive format=raw,file=disk.img
+ls
+set root=(hd0,msdos1)
+set prefix=(hd0,msdos1)/boot/grub
+linux /boot/vmlinuz root=/dev/sda1
+initrd /boot/initrd
+
+sudo umount /dev/mapper/loop0p1
+sudo dmsetup remove /dev/mapper/loop0p1
+sudo losetup -d /dev/loop0
+```
+
 ## 环境搭建
+
+Ubuntu 12.10(手头刚好在运行的直接抓来实验了，现年头都用19.10的(⊙o⊙)…)
 
 ```
 sudo apt-get install -y qemu-kvm kpartx bsdmainutils
 ```
 
-## 制作启动文件( disk.img = mbr+rootfs)**
+## 制作启动文件**( disk.img = mbr+rootfs)**
 
 创建100M启动文件，用来模拟后续的物理磁盘
 
@@ -101,7 +155,11 @@ sudo grub-install --root-directory=/mnt/rootfs/ /dev/loop0
 ![20200206_104359_53](image/20200206_104359_53.png)
 
 
-通过查看hd disk.img -n 512,可以看到前面的内容已经不再全是0,而且也能通过右边字符看到一些grub的描述，可以知道grub将bootloader的代码安装到了disk.img的mbr中:
+通过查看
+```
+hd disk.img -n 512
+```
+可以看到前面的内容已经不再全是0,而且也能通过右边字符看到一些grub的描述，可以知道grub将bootloader的代码安装到了disk.img的mbr中:
 
 ![20200206_105126_89](image/20200206_105126_89.png)
 
@@ -109,9 +167,7 @@ sudo grub-install --root-directory=/mnt/rootfs/ /dev/loop0
 
 告知vmlinuz和initrd.img的位置信息给grub2:
 
-在这里我们首先回顾一下我们现在有哪些了，我们有mbr的bootloader程序,我们也已经为磁盘disk.img的第一个分区划分了存储容量，并且文件系统格式为ext4和制作成了rootfs根文件系统。而grub2 bootloader程序是能够识别ext4文件系统，因此其能够知道第一个分区到底存储了什么内容，因此我们只需要将vmlinuz和initrd.img存放到第一分区，grub2 bootloader是有能力读取到这两个文件的。
-
-注：由于笔误，下面的initrd.img和initrd是指同一个文件
+有mbr的bootloader程序,我们也已经为磁盘disk.img的第一个分区划分了存储容量，并且文件系统格式为ext4和制作成了rootfs根文件系统。而**grub2 bootloader程序是能够识别ext4文件系统，因此其能够知道第一个分区到底存储了什么内容**，因此我们只需要将vmlinuz和initrd.img存放到第一分区，grub2 bootloader是有能力读取到这两个文件的。
 
 ```
 cd /mnt/rootfs
@@ -184,7 +240,7 @@ EOF
 
 搞不懂这里为嘛会。。权限不够，sudo不行了？？
 
-![20200206_113130_18](image/20200206_113130_18.png) 
+![20200206_113130_18](image/20200206_113130_18.png)
 
 ## 卸载disk.img
 

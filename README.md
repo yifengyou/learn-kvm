@@ -34,6 +34,21 @@ Bug report, questions and discussion are welcome, you can post an issue or pull 
     * [QEMU历史](docs/QEMU介绍/QEMU历史.md)
 * [QEMU基本结构](docs/QEMU基本结构.md)
 * [QEMU工作原理](docs/QEMU工作原理.md)
+* [QEMU功能](docs/QEMU功能.md)
+    * [虚拟处理器](docs/QEMU功能/虚拟处理器.md)
+    * [虚拟磁盘](docs/QEMU功能/虚拟磁盘.md)
+    * [虚拟网络](docs/QEMU功能/虚拟网络.md)
+    * [虚拟USB](docs/QEMU功能/虚拟USB.md)
+    * [其他虚拟外设](docs/QEMU功能/其他虚拟外设.md)
+    * [VNC](docs/QEMU功能/VNC.md)
+    * [GDB调试](docs/QEMU功能/GDB调试.md)
+    * [直接引导Linux内核](docs/QEMU功能/直接引导Linux内核.md)
+* [QEMU模拟不同体系架构系统](docs/QEMU模拟不同体系架构系统.md)
+    * [x86架构](docs/QEMU模拟不同体系架构系统/x86架构.md)
+    * [x86_64架构](docs/QEMU模拟不同体系架构系统/x86_64架构.md)
+    * [PowerPC架构](docs/QEMU模拟不同体系架构系统/PowerPC架构.md)
+    * [MIPS架构](docs/QEMU模拟不同体系架构系统/MIPS架构.md)
+    * [ARM架构](docs/QEMU模拟不同体系架构系统/ARM架构.md)
 * [QEMU使用](docs/QEMU使用.md)
     * [QEMU运行x86_64虚拟机](docs/QEMU使用/QEMU运行x86_64虚拟机.md)
 
@@ -67,6 +82,7 @@ Bug report, questions and discussion are welcome, you can post an issue or pull 
 ## 相关站点
 
 * QEMU官网 : <https://www.qemu.org/>
+* QEMU官方文档 : <https://qemu.weilnetz.de/doc/qemu-doc.html>
 * QEMU源码托管仓库 : <https://git.qemu.org/git/qemu.git/>
 * kvm源码托管仓库 : <https://git.kernel.org/pub/scm/virt/kvm/kvm.git/>
 * Kernel Virtual Machine : <http://www.linux-kvm.org/page/Main_Page>
